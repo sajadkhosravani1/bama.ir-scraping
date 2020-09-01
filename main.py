@@ -1,2 +1,2 @@
-import bama
-from bama.GUI import table
+from bama.car import Car
+import bama.GUI
