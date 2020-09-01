@@ -1,6 +1,6 @@
 import sqlite3
 
-DB_FILE = "/media/sajad/Projects/PycharmProjects/excercises/cars.sqlite3"
+DB_FILE = "cars.sqlite3"
 # DB_FILE = "D:/PycharmProjects/excercises/cars.sqlite3"
 # import os
 # print(os.path.abspath(DB_FILE))
@@ -92,6 +92,11 @@ class Car:
         conn.close()
 
     @staticmethod
+    def printAll():
+        for item in Car.getAll():
+            print(item)
+
+    @staticmethod
     def getAllByModel(brand,model):
         conn = getConnection()
         cur = conn.cursor()
@@ -159,7 +164,7 @@ class Car:
             for carHtmlNode in sectionHtmlNode.find('ul').findAll('a'):
                 car = Car()
                 car.brand = brand
-                car.model = carHtmlNode.find('span', attrs={'class': 'sefr-brand'}).text.strip()
+                car.model = carHtmlNode.find('span', attrs={'class': 'sefr-model'}).text.strip()
                 car.pYear = int(carHtmlNode.find('small', attrs={'class': 'sefr-trim'}).text.strip())
                 car.desc = carHtmlNode.find('small', attrs={'class': 'sefr-company'}).text.replace('،', '').strip()
                 car.priceDesc = carHtmlNode.find('small', attrs={'class': 'sefr-time'}).text.strip()
