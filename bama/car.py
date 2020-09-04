@@ -16,10 +16,10 @@ def getConnection():
     return conn
 
 class Car:
-
     TABLE_NAME = 'CARS'
     TABLE_HEADERS = {'BRAND','MODEL','P_YEAR','DESC','PRICE_DESC','PRICE'}
-    TABLE_HEADERS_PRS = {'برند','مدل','سال تولید','توضیح','توضیح قیمت','قیمت'}
+    TABLE_HEADERS_PRS = ['برند','مدل','سال تولید','توضیح','توضیح قیمت','قیمت']
+    TABLE_HEADERS_WEIGHTS = [1,4,2,4,4,2]
 
     def __init__(self):
         self.brand = ""
@@ -100,7 +100,7 @@ class Car:
     def getAllByModel(brand,model):
         conn = getConnection()
         cur = conn.cursor()
-        cur.execute("SELECT * FROM %s WHERE BRAND='%s',MODEL='%s';" % (Car.TABLE_NAME,brand,model))
+        cur.execute("SELECT * FROM %s WHERE BRAND='%s' AND MODEL='%s';" % (Car.TABLE_NAME,brand,model))
         while True:
             car = cur.fetchone()
             if not car:
@@ -156,6 +156,8 @@ class Car:
         import html
 
         r = requests.get("https://bama.ir/price")
+        if r.status_code != 200:
+            return r.status_code
         soup = BeautifulSoup(html.unescape(r.text), 'html.parser')
         Car.createTable()
 
@@ -170,3 +172,4 @@ class Car:
                 car.priceDesc = carHtmlNode.find('small', attrs={'class': 'sefr-time'}).text.strip()
                 car.price = int(carHtmlNode.find('small', attrs={'class': 'sefr-price'}).text.replace(',', '').strip())
                 car.insert()
+        return r.status_code
